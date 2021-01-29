@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  min-height: calc(100vh - 56px - 48px - 124px);
+}
+
+i {
+  color: #212529;
+  cursor: pointer;
+}
+
+img {
+  border-radius: 5px;
+  width: 150px;
+  height: 100px;
+}
+
+h2, h4 {
+  font-weight: 300 !important;
+}
+
+.video-card {
+  position: relative;
+  margin: 20px;
+}
+
+.video-card .video-box {
+  height: 200px;
+  width: 300px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.video-card .video-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  outline: none;
+}
+
+.video-card h4 {
+  line-height: 2.5rem;
+}
+
+.video-card p {
+  line-height: 2.5rem;
+  margin: 0;
+}
+
+.video-card strong {
+  font-weight: 500;
+}
+
+footer {
+  padding: 20px;
+  background-color: #f8f9fa;
+  width: 100%;
+}
+
+footer p {
+  color: #212529;
+  margin: 0;
+  text-align: center;
+}
+
+footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer li {
+  margin: 10px;
+}
+
+footer li a {
+  text-decoration: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #f8f9fa;
+  transition: all 0.2s ease-in-out;
+}
+
+footer li a:hover {
+  border: 1px solid #ccc;
+  background-color: #dadada;
+}
+
+.MyVideos th {
+  text-align: end;
+}
+
+.MyVideos td {
+  text-align: end;
+}
+
+.EditVideo textarea {
+  resize: none;
+}
