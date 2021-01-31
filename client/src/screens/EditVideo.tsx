@@ -19,11 +19,25 @@ const EditVideo: React.FC<IEditVideo> = ({ history }) => {
                 חזרה
             </Button>
 
-            <Form onSubmit={submitHandler} >
+            <Form onSubmit={submitHandler}>
+                <Form.Group controlId="exampleForm.SelectCustom">
+                  <div className='d-flex justify-content-end'>
+                    <Form.Label>קטגוריה</Form.Label>
+                  </div>
+
+                  <Form.Control as="select" custom dir='rtl'>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </Form.Control>
+                </Form.Group>
+
                 <Form.Group controlId="exampleForm.ControlInput1">
-                <div className='d-flex justify-content-end'>
-                    <Form.Label>כותרת</Form.Label>
-                </div>
+                    <div className='d-flex justify-content-end'>
+                        <Form.Label>כותרת</Form.Label>
+                    </div>
 
                     <Form.Control as="textarea" rows={3} type="text" placeholder="הזן כותרת" dir='rtl' />
                 </Form.Group>

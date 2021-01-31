@@ -24,17 +24,17 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
             <Table responsive="sm">
                 <thead>
                     <tr>
-                        <th>תאריך</th>
-                        <th>ודיאו</th>
+                        <th className='text-right'>תאריך</th>
+                        <th className='text-right'>ודיאו</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
+                        <td className='text-right'>
                             <span>May 10, 2013</span>
                         </td>
 
-                        <td>
+                        <td className='text-right'>
                             <div className='d-flex justify-content-end align-items-center flex-wrap'>
                                 <i className="far fa-trash-alt m-5" onClick={deleteVideoHandler}></i>
                                 <i className="fas fa-edit m-5" onClick={editImage}></i>

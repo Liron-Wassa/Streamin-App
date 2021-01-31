@@ -1,3 +1,5 @@
+/* ======================= General Elements =======================*/
+
 body {
   margin: 0;
   padding: 0;
@@ -18,40 +20,17 @@ img {
   height: 100px;
 }
 
+input[type='file'] {
+  visibility: hidden;
+  display: none;
+}
+
 h2, h4 {
   font-weight: 300 !important;
 }
 
-.video-card {
-  position: relative;
-  margin: 20px;
-}
-
-.video-card .video-box {
-  height: 200px;
-  width: 300px;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.video-card .video-box video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  outline: none;
-}
-
-.video-card h4 {
-  line-height: 2.5rem;
-}
-
-.video-card p {
-  line-height: 2.5rem;
-  margin: 0;
-}
-
-.video-card strong {
-  font-weight: 500;
+textarea {
+  resize: none !important;
 }
 
 footer {
@@ -60,19 +39,8 @@ footer {
   width: 100%;
 }
 
-footer p {
-  color: #212529;
-  margin: 0;
-  text-align: center;
-}
-
 footer ul {
-  margin: 0;
-  padding: 0;
   list-style: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 footer li {
@@ -81,9 +49,6 @@ footer li {
 
 footer li a {
   text-decoration: none !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -96,14 +61,74 @@ footer li a:hover {
   background-color: #dadada;
 }
 
-.MyVideos th {
-  text-align: end;
+/* ============================================================*/
+
+/* ======================= AddVideoModal Elements =======================*/
+
+.modal-dialog {
+  max-width: 1100px !important;
 }
 
-.MyVideos td {
-  text-align: end;
+.AddVideoModal .video-box {
+  position: relative;
+  width: 100%;
+  height: 252px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid rgb(231, 231, 231);
+  overflow: hidden;
 }
 
-.EditVideo textarea {
-  resize: none;
+.AddVideoModal .video-box p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
+
+.AddVideoModal .video-box video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  outline: none;
+}
+
+/* ============================================================*/
+
+/* ======================= Videos Elements =======================*/
+
+.Videos .video-card {
+  position: relative;
+  margin: 20px;
+}
+
+.Videos .video-card .video-box {
+  height: 200px;
+  width: 300px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.Videos .video-card .video-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  outline: none;
+}
+
+.Videos .video-card h4 {
+  line-height: 2.5rem;
+}
+
+.Videos .video-card p {
+  line-height: 2.5rem;
+}
+
+.Videos .video-card strong {
+  font-weight: 500;
+}
+
+/* ============================================================*/

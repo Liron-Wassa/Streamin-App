@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
             <Container>
                 <Social />
 
-                <p>.כל הזכויות שמורות © 2021 אביאל ווסה</p>
+                <p className='text-center m-0'>.כל הזכויות שמורות © 2021 אביאל ווסה</p>
             </Container>
         </footer>
     )
