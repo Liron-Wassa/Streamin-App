@@ -9,15 +9,19 @@ main {
   min-height: calc(100vh - 56px - 48px - 124px);
 }
 
+textarea:focus,
+textarea.form-control:focus,
+select:focus,
+select.form-control:focus,
+input.form-control:focus,
+input:focus {
+  box-shadow: 0 0 0 2px #dadada !important;
+  border: 1px solid #ccc !important;
+}
+
 i {
   color: #212529;
   cursor: pointer;
-}
-
-img {
-  border-radius: 5px;
-  width: 150px;
-  height: 100px;
 }
 
 input[type='file'] {
@@ -25,8 +29,13 @@ input[type='file'] {
   display: none;
 }
 
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+}
+
 h2, h4 {
-  font-weight: 300 !important;
+  font-weight: 400 !important;
+  letter-spacing: 1px;
 }
 
 textarea {
@@ -72,18 +81,12 @@ footer li a:hover {
 .AddVideoModal .video-box {
   position: relative;
   width: 100%;
-  height: 252px;
+  height: 258px;
+  margin-top: 32px;
   background-color: #f8f9fa;
   border-radius: 5px;
   border: 1px solid rgb(231, 231, 231);
   overflow: hidden;
-}
-
-.AddVideoModal .video-box p {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .AddVideoModal .video-box video {
@@ -96,9 +99,20 @@ footer li a:hover {
   outline: none;
 }
 
+@media(max-width: 770px) {
+  .AddVideoModal .video-box {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+}
+
 /* ============================================================*/
 
 /* ======================= Videos Elements =======================*/
+
+.Videos h2 {
+  margin-top: 50px;
+}
 
 .Videos .video-card {
   position: relative;
@@ -106,13 +120,18 @@ footer li a:hover {
 }
 
 .Videos .video-card .video-box {
+  position: relative;
   height: 200px;
   width: 300px;
   border-radius: 5px;
+  border: 1px solid rgb(231, 231, 231);
   overflow: hidden;
 }
 
 .Videos .video-card .video-box video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -132,3 +151,27 @@ footer li a:hover {
 }
 
 /* ============================================================*/
+
+.MyVideos .video-box {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border: 1px solid rgb(231, 231, 231);
+}
+
+.MyVideos .video-box.uncompleted {
+  opacity: 0.5;
+}
+
+.MyVideos .video-box video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  object-fit: cover;
+}

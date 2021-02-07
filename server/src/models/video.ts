@@ -1,11 +1,12 @@
+import { IVideo } from '../interfaces/video';
 import mongoose, { Schema } from 'mongoose';
-import IVideo from '../interfaces/video';
  
 const videoSchema: Schema = new Schema({
     src: { type: String, required: true },
-    category: { type: String, required: true },
-    title: { type: String, required: true },
-    price: { type: Number, required: true }
+    category: { type: String, default: '' },
+    title: { type: String, default: '' },
+    price: { type: Number, default: null },
+    isUncompleted: { type: Boolean, default: true }
 },
 {
     timestamps: true

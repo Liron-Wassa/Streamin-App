@@ -1,4 +1,5 @@
 import { Switch, Route, Redirect } from 'react-router-dom';
+import SocketContextProvider from './contexts/Socket';
 import EditVideo from './screens/EditVideo';
 import MyVideos from './screens/MyVideos';
 import Footer from './components/Footer';
@@ -9,22 +10,23 @@ import React from 'react';
 const App: React.FC = () => {
   return (
     <>
-      <Header />
+      <SocketContextProvider>
+        <Header />
 
-      <main className='main'>
-        <Switch>
-          <Route exact path='/' render={() => <Redirect to='/videos/trailers' />} />
+        <main className='main'>
+          <Switch>       
+            <Route exact path='/' render={() => <Redirect to='/videos?category=trailers' />} />
 
-          <Route exact path='/videos/contents' component={MyVideos} />
-          <Route path='/videos/contents/:videoId/edit' component={EditVideo} />
-          <Route path='/videos/trailers' component={Videos} />
-          <Route path='/videos/montages' component={Videos} />
-        </Switch>
-      </main>
+            <Route exact path='/videos/contents' component={MyVideos} />
+            <Route path='/videos/contents/:videoId/edit' component={EditVideo} />
+            <Route path='/videos' component={Videos} />
+          </Switch>
+        </main>
 
-      <Footer />
+        <Footer />
+      </SocketContextProvider>
     </>
-  )
-}
+  );
+};
 
 export default App;
