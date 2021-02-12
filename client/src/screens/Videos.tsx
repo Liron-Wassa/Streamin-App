@@ -1,11 +1,12 @@
-import { Container, Col, Row, Button, Alert, Spinner } from 'react-bootstrap';
 import React, { useState, useEffect, useMemo, useContext } from 'react';
+import { Container, Button, Alert, Spinner } from 'react-bootstrap';
 import { fetchVideos, cancelVideoRequest } from '../api/video';
 import { ICategories, IVideo } from '../interfaces/video';
 import AddVideoModal from '../components/AddVideoModal';
 import { RouteComponentProps } from 'react-router-dom';
 import { SocketContext } from "../contexts/Socket";
 import { AuthContext } from '../contexts/Auth';
+import { motion } from 'framer-motion';
 
 interface IVideos extends RouteComponentProps {}
 
@@ -100,30 +101,32 @@ const Videos: React.FC<IVideos> = ({ history }) => {
 
             {videos.length === 0 && !error && !isLoading && <h2 className='text-center'>!רשימה ריקה</h2>}
 
-            <Row>
-                <Col className='d-flex justify-content-center flex-wrap'>
-                    {videos.map(video => {
-                        return (
-                            <div className='video-card' key={video._id}>                            
-                                <div className='video-box'>
-                                    <video controls>
-                                        <source src={`/${video.src}`} type="video/mp4" />
-                                    </video>
-                                </div>
+            <div className='videoContainer'>
+                {[...videos].reverse().map(video => {
+                    return (
+                        <motion.div
+                            className='video-card'
+                            key={video._id}
+                            layout
+                        >                            
+                            <div className='video-box'>
+                                <video controls>
+                                    <source src={`/${video.src}`} type="video/mp4" />
+                                </video>
+                            </div>
 
-                                <div className='video-content'>
-                                    <p className='text-right text-break description'>{video.description}</p>
+                            <div className='video-content'>
+                                <p className='text-right text-break description'>{video.description}</p>
 
-                                    <div className='d-flex flex-column'>
-                                        <span className='text-right'>&#8362;{video.price} מחירון</span>
-                                        <span className='text-right'>{video.updatedAt!.substr(0, 10).split('-').reverse().join('/')}</span>
-                                    </div>
+                                <div className='d-flex flex-column'>
+                                    <span className='text-right'>&#8362;{video.price} מחירון</span>
+                                    <span className='text-right'>{video.updatedAt!.substr(0, 10).split('-').reverse().join('/')}</span>
                                 </div>
                             </div>
-                        );
-                    })}
-                </Col>
-            </Row>
+                        </motion.div>
+                    );
+                })}
+            </div>
         </Container>
     )
 }

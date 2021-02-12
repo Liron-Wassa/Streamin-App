@@ -121,7 +121,16 @@ footer li a:hover {
   margin-top: 50px;
 }
 
+.Videos .videoContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  align-items: center;
+}
+
 .Videos .video-card {
+  justify-self: center;
+  align-self: center;
   max-width: 300px;
   margin: 20px;
 }
