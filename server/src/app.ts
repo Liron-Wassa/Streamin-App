@@ -3,6 +3,7 @@ import express, { Application } from 'express';
 import { findAll } from './services/video';
 import videoRoute from './routes/video';
 import connectToDb from './config/db';
+import userRoute from './routes/user';
 import { Server } from 'http';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -28,6 +29,7 @@ connectToDb();
 //============= Routes ================//
 
 app.use('/api/videos', videoRoute);
+app.use('/api/users', userRoute);
 
 //=====================================//
 
@@ -50,7 +52,7 @@ const io: SocketServer = new SocketServer(server);
 io.on('connection', (socket) => {
     console.log('connect');
     
-    socket.on('fetchVideos', async (category: string) => {
+    socket.on('getUpdatedVideos', async (category: string) => {
         const videos = await findAll({category: category});
 
         socket.emit('updatedVideos', videos);

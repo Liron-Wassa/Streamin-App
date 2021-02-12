@@ -24,12 +24,24 @@ export function videoValidation(req: Request, res: Response, next: NextFunction)
 
     const videoSchema = joi.object({
         category: joi.string().required(),
-        title: joi.string().required(),
+        description: joi.string().required(),
         price: joi.number().required(),
         isUncompleted: joi.boolean()
     });
 
     const { error } = videoSchema.validate(req.body);
+
+    if(error) res.status(400).send(error.details[0].message);
+    else next();
+};
+
+export function loginValidation(req: Request, res: Response, next: NextFunction) {
+    const loginSchema = joi.object({
+        email: joi.string().required(),
+        password: joi.string().required()
+    });
+
+    const { error } = loginSchema.validate(req.body);
 
     if(error) res.status(400).send(error.details[0].message);
     else next();

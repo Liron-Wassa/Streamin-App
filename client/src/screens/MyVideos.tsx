@@ -1,8 +1,9 @@
+import { fetchAllVideos, cancelVideoRequest, deleteVideo } from '../api/video';
 import { Container, Table, Alert, Spinner } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
 import { RouteComponentProps } from 'react-router';
-import React, { useState, useEffect } from 'react';
+import { AuthContext } from '../contexts/Auth';
 import { IVideo } from '../interfaces/video';
-import axios from 'axios';
 
 interface IMyVideos extends RouteComponentProps{}
 
@@ -12,41 +13,52 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [videos, setVideos] = useState<IVideo[]>([]);
     const [error, setError] = useState<string>('');
+
+    const { userToken } = useContext(AuthContext);
     
     useEffect(() => {
-        const fetchAllVideos = () => {
-            setError('');
-            setIsLoading(true);
-            setIsVideoDelete(false);
+        const fetchAllVideosHandler = async (): Promise<void> => {
+            try {  
+                setError('');
+                setIsLoading(true);
+                setIsVideoDelete(false);
     
-            axios.get('/api/videos')
-            .then(res => {
+                const videos = await fetchAllVideos(userToken);
+                
                 setIsLoading(false);
-                setVideos(res.data);
-            })
-            .catch(error => {
+                setVideos(videos);
+                
+            } catch (error) {
+                if(error.message === 'Cancel') return;
+                
                 setIsLoading(false);
-                setError(error.response.data);
-            });
+                setError(error.message);
+            };
         };
 
-        fetchAllVideos();
-    }, [isVideoDelete]);
+        fetchAllVideosHandler();
 
-    const deleteVideoHandler = (videoId: string): void => {
-        if(window.confirm('אתה בטוח ?')) {
-            setError('');
-            setIsLoading(true);
+        return () => cancelVideoRequest();
+        
+    }, [isVideoDelete, userToken]);
+    
+    const deleteVideoHandler = async (videoId: string): Promise<void> => {
+        try { 
+            if(window.confirm('אתה בטוח ?')) {
+                setError('');
+                setVideos([]);
+                setIsLoading(true);
+    
+                await deleteVideo(userToken, videoId);
 
-            axios.delete(`/api/videos/${videoId}`)
-            .then(res => {
                 setIsLoading(false);
                 setIsVideoDelete(true);
-            })
-            .catch(error => {
-                setIsLoading(false);
-                setError(error.response.data)
-            });
+            };
+        } catch (error) {            
+            if(error.message === 'Cancel') return;
+            
+            setIsLoading(false);
+            setError(error.message)
         };
     };
 
@@ -55,7 +67,7 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
     };
 
     return (
-        <Container as='section' className='MyVideos my-5'>
+        <Container as='section' className='MyVideos'>
             <h2 className='text-center mb-4'>כל הוידיאו</h2>
 
                 {isLoading &&
@@ -80,18 +92,18 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
                             </tr>
                         </thead>
                     
-                        {videos.map(video => (
-                            <tbody key={video._id}>
-                                <tr>
-                                    <td className='text-right'>
+                        <tbody>
+                            {videos.map(video => (
+                                <tr key={video._id}>
+                                    <td data-header=':תאריך' className='text-right'>
                                         {video.isUncompleted ?
                                             <span>לא מוגדר</span>
                                         :
-                                            <span>{video.updatedAt.substr(0, 10).split('-').reverse().join('/')}</span>
+                                            <span>{video.updatedAt!.substr(0, 10).split('-').reverse().join('/')}</span>
                                         }
                                     </td>
 
-                                    <td className='text-right'>
+                                    <td data-header=':מחיר' className='text-right'>
                                         {video.isUncompleted ?
                                             <span>לא מוגדר</span>
                                         :
@@ -99,15 +111,15 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
                                         }
                                     </td>
 
-                                    <td className='text-right'>
+                                    <td data-header=':תיאור' className='text-right descriptionTd'>
                                         {video.isUncompleted ?
                                             <span>לא מוגדר</span>
                                         :
-                                            <span>{video.title}</span>
+                                            <span className='description text-break'>{video.description}</span>
                                         }
                                     </td>
 
-                                    <td className='text-right'>
+                                    <td data-header=':קטגוריה' className='text-right'>
                                         {video.isUncompleted ?
                                             <span>לא מוגדר</span>
                                         :
@@ -115,7 +127,7 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
                                         }
                                     </td>
 
-                                    <td style={{width: '250px'}}>
+                                    <td data-header=':וידיאו' className='videoTd'>
                                         <div className={video.isUncompleted ? 'video-box uncompleted' : 'video-box'}>
                                             <video controls>
                                                 <source src={`/${video.src}`} type="video/mp4" />
@@ -123,15 +135,15 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
                                         </div>
                                     </td>
 
-                                    <td className='text-right'>
+                                    <td className='text-right buttonsTd'>
                                         <div className="d-flex justify-content-between">
-                                            <i className="fas fa-edit" onClick={() => editImage(video._id)}></i>
-                                            <i className="far fa-trash-alt" onClick={() => deleteVideoHandler(video._id)}></i>
+                                            <i className="fas fa-edit" onClick={() => editImage(video._id!)}></i>
+                                            <i className="far fa-trash-alt" onClick={() => deleteVideoHandler(video._id!)}></i>
                                         </div>
                                     </td>
                                 </tr>
-                            </tbody>
-                        ))}
+                            ))}
+                        </tbody>
                     </Table>
                 }
 

@@ -1,61 +1,79 @@
+import { fetchVideo, updateVideo, cancelVideoRequest } from '../api/video';
 import { Container, Form, Button, Spinner, Alert } from 'react-bootstrap';
-import { RouteComponentProps } from 'react-router';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from 'react';
+import { RouteComponentProps, Redirect } from 'react-router';
+import { AuthContext } from '../contexts/Auth';
+import { IVideo } from '../interfaces/video';
 
 interface IEditVideo extends RouteComponentProps<{videoId: string}> {};
 
 const EditVideo: React.FC<IEditVideo> = ({ history, match }) => {
 
+    const [isVideoUpdated, setIsVideoUpdated] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [description, setDescription] = useState<string>('');
+    const [price, setPrice] = useState<string | number>('');
     const [category, setCategory] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [price, setPrice] = useState<string>('');
     const [error, setError] = useState<string>('');
 
+    const { userToken } = useContext(AuthContext);
+
     useEffect(() => {
-        const fetchVideo = () => {
-            setIsLoading(true);
-            setError('');
-    
-            axios.get(`/api/videos/${match.params.videoId}`)
-            .then(res => {
-                const category: string = res.data.category ? res.data.category : 'טריילרים';
+        const fetchVideoHandler = async (): Promise<void> => {
+            try {
+                setIsLoading(true);
+                setError('');
+                
+                const video = await fetchVideo(userToken, match.params.videoId);
+
+                const category: string = video.category ? video.category : 'טריילרים';
 
                 setIsLoading(false);
                 setCategory(category);
-                setTitle(res.data.title);
-                setPrice(res.data.price);
-            })
-            .catch(error => {
+                setDescription(video.description);
+                setPrice(video.price);
+
+            } catch (error) {
+                if(error.message === 'Cancel') return;
+
                 setIsLoading(false);
-                setError(error.response.data);
-            });
+                setError(error.message);
+            };
         };
 
-        fetchVideo();
+        fetchVideoHandler();
+        return () => cancelVideoRequest();
 
-    }, [match]);
 
-    const submitHandler = (event: React.FormEvent<HTMLFormElement>): void => {
-        event.preventDefault();
-        
-        setIsLoading(true);
-        setError('');
+    }, [match, userToken]);
 
-        axios.patch(`/api/videos/${match.params.videoId}`, {category, title, price, isUncompleted: false})
-        .then(res => {
+    const updateVideoHandler = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+        try {
+            event.preventDefault();
+            
+            setIsLoading(true);
+            setError('');
+
+            const updatedFields: IVideo = { category, description, price, isUncompleted: false };
+            await updateVideo(userToken, match.params.videoId, updatedFields);
+
             setIsLoading(false);
-            history.goBack();
-        })
-        .catch(error => {
+            setIsVideoUpdated(true);
+
+        } catch (error) {
+            if(error.message === 'Cancel') return;
+
             setIsLoading(false);
-            setError(error.response.data);
-        });
+            setError(error.message);
+        };
+    };
+
+    if(isVideoUpdated) {
+        return <Redirect to='/videos/contents' />;
     };
 
     return (
-        <Container as='section' className='EditVideo my-5'>
+        <Container as='section' className='EditVideo'>
             <h2 className='text-center mb-4'>ערוך תוכן</h2>
 
             {isLoading &&
@@ -80,7 +98,7 @@ const EditVideo: React.FC<IEditVideo> = ({ history, match }) => {
             }
 
             {!isLoading &&
-                <Form onSubmit={submitHandler}>
+                <Form onSubmit={updateVideoHandler}>
                     <Form.Group controlId="exampleForm.SelectCustom">
                     <div className='d-flex justify-content-end'>
                         <Form.Label>קטגוריה</Form.Label>
@@ -100,16 +118,16 @@ const EditVideo: React.FC<IEditVideo> = ({ history, match }) => {
 
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <div className='d-flex justify-content-end'>
-                            <Form.Label>כותרת</Form.Label>
+                            <Form.Label>תיאור</Form.Label>
                         </div>
 
                         <Form.Control
                             as="textarea"
                             rows={3} type="text"
-                            placeholder="הזן כותרת"
+                            placeholder="הזן תיאור"
                             dir='rtl'
-                            value={title}
-                            onChange={(event => setTitle(event.target.value))}
+                            value={description}
+                            onChange={(event => setDescription(event.target.value))}
                         />
                     </Form.Group>
 

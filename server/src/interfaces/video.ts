@@ -8,7 +8,7 @@ export interface IVideo extends Document {
     _id: string,
     src: string,
     category: string,
-    title: string,
+    description: string,
     price: number,
     isUncompleted: boolean
 };

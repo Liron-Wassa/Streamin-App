@@ -1,4 +1,5 @@
 import { createVideo, getAll, getOne, removeOne, updateOne } from '../controllers/video';
+import { checkUserAdmin, checkUserLogin } from '../middlewares/auth';
 import { videoValidation } from '../middlewares/validation';
 import multer, { Multer, StorageEngine } from 'multer';
 import { Router, Request } from 'express';
@@ -40,9 +41,10 @@ const upload: Multer = multer({
 });
 
 router.get('/', getAll);
-router.get('/:videoId', getOne);
-router.post('/', upload.single('video'), createVideo);
-router.patch('/:videoId', videoValidation, updateOne);
-router.delete('/:videoId', removeOne);
+router.get('/contents', checkUserLogin, checkUserAdmin, getAll);
+router.get('/:videoId', checkUserLogin, checkUserAdmin, getOne);
+router.post('/', checkUserLogin, checkUserAdmin, upload.single('video'), createVideo);
+router.patch('/:videoId', checkUserLogin, checkUserAdmin, videoValidation, updateOne);
+router.delete('/:videoId', checkUserLogin, checkUserAdmin, removeOne);
 
 export = router;

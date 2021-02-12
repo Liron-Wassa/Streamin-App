@@ -1,11 +1,18 @@
 /* ======================= General Elements =======================*/
 
+@import url('https://fonts.googleapis.com/css2?family=Akronim&display=swap');
+
+.logo {
+  font-family: 'Akronim', cursive;
+}
+
 body {
   margin: 0;
   padding: 0;
 }
 
 main {
+  position: relative;
   min-height: calc(100vh - 56px - 48px - 124px);
 }
 
@@ -33,7 +40,7 @@ input:focus, select:focus, textarea:focus {
   outline: none !important;
 }
 
-h2, h4 {
+h1, h2, h4 {
   font-weight: 400 !important;
   letter-spacing: 1px;
 }
@@ -115,47 +122,57 @@ footer li a:hover {
 }
 
 .Videos .video-card {
-  position: relative;
+  max-width: 300px;
   margin: 20px;
 }
 
 .Videos .video-card .video-box {
   position: relative;
-  height: 200px;
-  width: 300px;
+  height: 180px;
+  width: 100%;
   border-radius: 5px;
   border: 1px solid rgb(231, 231, 231);
   overflow: hidden;
 }
 
-.Videos .video-card .video-box video {
-  position: absolute;
-  top: 0;
-  left: 0;
+.Videos .video-card .video-box > video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   outline: none;
 }
 
-.Videos .video-card h4 {
-  line-height: 2.5rem;
+.Videos .video-card .video-content {
+  padding-top: 5px;
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.Videos .video-card p {
-  line-height: 2.5rem;
-}
-
-.Videos .video-card strong {
+.Videos .video-card .video-content .description {
+  line-height: 1.4;
   font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.Videos .video-card .video-content div {
+  color: #606060;
+}
+
+.Videos .video-card .video-content div span {
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
 /* ============================================================*/
 
+/* ======================= MyVideos Elements =======================*/
+
 .MyVideos .video-box {
   position: relative;
   width: 100%;
-  height: 150px;
+  height: 130px;
   overflow: hidden;
   background-color: #f8f9fa;
   border-radius: 5px;
@@ -175,3 +192,110 @@ footer li a:hover {
   outline: none;
   object-fit: cover;
 }
+
+.MyVideos table tr .videoTd, .descriptionTd {
+  width: 250px;
+}
+
+.MyVideos table tr .buttonsTd div {
+  width: 100%;
+}
+
+@media (max-width: 1000px) {
+  .MyVideos table {
+    border-collapse: unset;
+  }
+
+  .MyVideos table thead {
+    display: none;
+  }
+
+  .MyVideos table tbody tr {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 30px;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+  }
+
+  .MyVideos table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .MyVideos table td:not(.buttonsTd)::before {
+    content: attr(data-header);
+    font-weight: bold;
+    margin-left: 25px;
+  }
+
+  .MyVideos table tr .buttonsTd {
+    width: 100%;
+    background: #f8f9fa;
+  }
+
+  .MyVideos table tr .videoTd, .MyVideos table tr .descriptionTd {
+    width: 100%;
+  }
+
+  .MyVideos .video-box, .MyVideos .description {
+    max-width: 220px;
+  }
+
+  .MyVideos table tr td {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .MyVideos table tr td:first-child {
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
+/* ============================================================*/
+
+/* ======================= NotFound Elements =======================*/
+
+.NotFound {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.NotFound div {
+  color: #ccc;
+}
+
+.NotFound div i {
+  font-size: 10rem;
+  color: #979797;
+}
+
+.NotFound div h1 {
+  font-size: 4rem;
+  color: #ccc;
+}
+
+.NotFound p {
+  font-size: 1.5rem;
+  color: #979797;
+}
+
+/* ============================================================*/
+
+/* ======================= Login Elements =======================*/
+
+.Login .PasswordInput {
+  position: relative;
+}
+
+.Login .PasswordInput svg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* ============================================================*/

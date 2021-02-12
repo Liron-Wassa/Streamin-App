@@ -1,8 +1,9 @@
 import { Modal, Button, Col, Row, Container, Form, Spinner, Alert } from "react-bootstrap";
+import { createVideo, cancelVideoRequest, updateVideo } from "../api/video";
 import React, { useState, useEffect, useContext } from "react";
-import { ICategories } from '../interfaces/video';
+import { ICategories, IVideo } from '../interfaces/video';
 import { SocketContext } from "../contexts/Socket";
-import axios from 'axios';
+import { AuthContext } from "../contexts/Auth";
 interface IAddVideoModal {
   isModalShow: boolean;
   setIsModalShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,74 +17,82 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [category, setCategory] = useState<string>('');
   const [videoId, setVideoId] = useState<string>('');
-  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [price, setPrice] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [src, setSrc] = useState<string>('');
 
   const { socket } = useContext(SocketContext);
+  const { userToken } = useContext(AuthContext);
 
   useEffect(() => {
     if(categories && currentCategory) {
       setCategory(categories[currentCategory]);
     };
+
+    return () => cancelVideoRequest();
+
   }, [categories, currentCategory]);
 
-  const submitHandler = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    event.preventDefault();
+  const updateVideoHandler = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    try {
+      event.preventDefault();
 
-    const updateVideo = async (): Promise<void> => {
       setError('');
       setIsLoading(true);
-  
-      await axios.patch(`/api/videos/${videoId}`, {category, title, price, isUncompleted: false})
-      .then(res => {
-        setIsLoading(false);
-        resetVideoDetails();
-        setIsModalShow(false);      
-      })
-      .catch(error => {
-        resetVideoDetails();
-        setIsLoading(false);
-        setError(error.response.data);
-      });
-    };
 
-    await updateVideo();
-    
-    socket.emit('fetchVideos', category);
+      const updatedFields: IVideo = { category, description, price, isUncompleted: false };
+      await updateVideo(userToken, videoId, updatedFields);
+
+      setIsLoading(false);
+      resetVideoDetails();
+      setIsModalShow(false);
+
+      socket.emit('getUpdatedVideos', category);
+      
+    } catch (error) {
+      if(error.message) return;
+
+      resetVideoDetails();
+      setIsLoading(false);
+      setError(error.message);
+    };
   };
 
   const resetVideoDetails = (): void => {
-    setTitle('');
+    setDescription('');
     setPrice('');
     setSrc('');
   };
 
-  const createVideo = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const createVideoHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setError('');
+      setIsLoadingVideoSrc(true);
+
+      const formData = generateVideoForm(event);
+
+      const { videoId, videoPath } = await createVideo(userToken, formData);
+
+      setIsLoadingVideoSrc(false);
+      setSrc(videoPath);
+      setVideoId(videoId);
+      
+    } catch (error) {
+      if(error.message === 'Cancel') return;
+
+      setIsLoadingVideoSrc(false);
+      setError(error.message);
+    };
+  };
+
+  const generateVideoForm = (event: React.ChangeEvent<HTMLInputElement>): FormData => {
     const file: File = event.target.files![0];   
-
+  
     const formData: FormData = new FormData();
-
     formData.append('video', file);
 
-    const configHeaders = {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    };
-
-    setError('');
-    setIsLoadingVideoSrc(true);
-
-    axios.post('/api/videos', formData, configHeaders)
-    .then(res => {
-      setIsLoadingVideoSrc(false);
-      setSrc(res.data.videoPath);
-      setVideoId(res.data.videoId);
-    })
-    .catch(error => {
-      setIsLoadingVideoSrc(false);
-      setError(error.response.data);
-    });
+    return formData;
   };
 
   return (
@@ -116,7 +125,7 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
 
       <Modal.Body className="show-grid">
         <Container>
-          <Form onSubmit={submitHandler}>
+          <Form onSubmit={updateVideoHandler}>
             {src ?
               <>
                 <Row>
@@ -157,17 +166,17 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
 
                     <Form.Group controlId="exampleForm.ControlInput1">
                       <div className='d-flex justify-content-end'>
-                        <Form.Label>כותרת</Form.Label>
+                        <Form.Label>תיאור</Form.Label>
                       </div>
 
                       <Form.Control
                         as="textarea"
                         rows={3} type="text"
-                        placeholder="הזן כותרת"
+                        placeholder="הזן תיאור"
                         dir='rtl'
                         required
-                        value={title}
-                        onChange={(event) => setTitle(event.target.value)}
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
                       />
                     </Form.Group>
 
@@ -223,7 +232,7 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
                     <Form.Control
                       type="file"
                       required
-                      onChange={createVideo}
+                      onChange={createVideoHandler}
                       accept='video/mov, video/mp4, video/wmv'
                     />
                   </Form.Group>

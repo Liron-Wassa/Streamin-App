@@ -1,11 +1,11 @@
 export interface IVideo {
-    _id: string,
-    src: string,
-    category: string,
-    title: string,
-    price: number,
-    isUncompleted: boolean,
-    updatedAt: string
+    _id?: string,
+    src?: string,
+    category?: string,
+    updatedAt?: string,
+    description: string,
+    price: number | string,
+    isUncompleted: boolean
 };
 
 export interface ICategories {

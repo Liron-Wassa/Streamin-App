@@ -1,9 +1,14 @@
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import React from 'react';
+import { AuthContext } from '../contexts/Auth';
+import React, { useContext } from 'react';
 
 const Navigation: React.FC<RouteComponentProps> = ({history}) => {
+
+    const { userToken } = useContext(AuthContext);
+
+    const isUserAuthenticated: boolean = !!userToken;
     
     const query: string = history.location.search.split('=')[1];
     const path: string = history.location.pathname;
@@ -12,16 +17,18 @@ const Navigation: React.FC<RouteComponentProps> = ({history}) => {
         <Navbar bg="light" expand="lg">
             <Container>
                 <LinkContainer to='/videos?category=trailers'>
-                    <Navbar.Brand>Logo</Navbar.Brand>
+                    <Navbar.Brand className='logo'>PARADISE</Navbar.Brand>
                 </LinkContainer>
 
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="ml-auto">
-                        <LinkContainer to='/videos/contents'>
-                            <Nav.Link active={path === '/videos/contents'} className='text-right'>וידאו שלי</Nav.Link>
-                        </LinkContainer>
+                        {isUserAuthenticated &&
+                            <LinkContainer to='/videos/contents'>
+                                <Nav.Link active={path === '/videos/contents'} className='text-right'>וידאו שלי</Nav.Link>
+                            </LinkContainer>
+                        }
 
                         <LinkContainer to='/videos?category=advertisement'>
                             <Nav.Link active={query === 'advertisement'} className='text-right'>פרסומות</Nav.Link>
@@ -34,6 +41,12 @@ const Navigation: React.FC<RouteComponentProps> = ({history}) => {
                         <LinkContainer to='/videos?category=trailers'>
                             <Nav.Link active={query === 'trailers'} className='text-right'>טריילרים</Nav.Link>
                         </LinkContainer>
+
+                        {isUserAuthenticated &&
+                            <LinkContainer to='/logout'>
+                                <Nav.Link className='text-right'>יציאה</Nav.Link>
+                            </LinkContainer>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Container>

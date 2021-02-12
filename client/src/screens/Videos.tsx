@@ -1,10 +1,11 @@
 import { Container, Col, Row, Button, Alert, Spinner } from 'react-bootstrap';
 import React, { useState, useEffect, useMemo, useContext } from 'react';
+import { fetchVideos, cancelVideoRequest } from '../api/video';
 import { ICategories, IVideo } from '../interfaces/video';
 import AddVideoModal from '../components/AddVideoModal';
 import { RouteComponentProps } from 'react-router-dom';
 import { SocketContext } from "../contexts/Socket";
-import axios from 'axios';
+import { AuthContext } from '../contexts/Auth';
 
 interface IVideos extends RouteComponentProps {}
 
@@ -24,6 +25,9 @@ const Videos: React.FC<IVideos> = ({ history }) => {
     const [error, setError] = useState<string>('');
 
     const { socket } = useContext(SocketContext);
+    const { userToken } = useContext(AuthContext);
+
+    const isUserAuthenticated: boolean = !!userToken;
 
     const categories: ICategories = useMemo(() => ({
         trailers: "טריילרים",
@@ -32,42 +36,52 @@ const Videos: React.FC<IVideos> = ({ history }) => {
     }), []);
 
     useEffect(() => {
-        const fetchVideos = (): void => {
-            setError('');
-            setVideos([]);
-            setIsLoading(true);
-    
-            axios.get(`/api/videos?category=${categories[currentCategory]}`)
-            .then(res => {            
-                setVideos(res.data);
+        const fetchVideosHandler = async (): Promise<void> => {
+            try {
+                setError('');
+                setVideos([]);
+                setIsLoading(true);
+                
+                const videos = await fetchVideos(categories[currentCategory]);
+                                      
+                setVideos(videos);
                 setIsLoading(false);
-            })
-            .catch(error => {
-                setError(error.response.data);
+
+            } catch (error) {
+                if(error.message === 'Cancel') return;
+                
+                setError(error.message);
                 setIsLoading(false);
-            });
+            };
         };
 
-        fetchVideos();
+        fetchVideosHandler();
 
         socket.on('updatedVideos', (videos: IVideo[]) => {            
             setVideos(videos);
         });
 
+        return () => cancelVideoRequest();
+
     }, [categories, currentCategory, socket]);
-    
+
     return (
-        <Container as='section' className='Videos p-3 my-5'>
-            <div className='d-flex justify-content-center mb-2'>
-                <Button variant="light" size='sm' onClick={() => setIsModalShow(true)}>+ הוסף וידיאו</Button>
-            </div>
+        <Container as='section' className='Videos p-3'>
             
-            <AddVideoModal
-                isModalShow={isModalShow}
-                setIsModalShow={setIsModalShow}
-                categories={categories}
-                currentCategory={currentCategory}
-            />
+            {isUserAuthenticated &&
+                <>
+                    <div className='d-flex justify-content-center mb-2'>
+                        <Button variant="light" size='sm' onClick={() => setIsModalShow(true)}>+ הוסף וידיאו</Button>
+                    </div>
+                    
+                    <AddVideoModal
+                        isModalShow={isModalShow}
+                        setIsModalShow={setIsModalShow}
+                        categories={categories}
+                        currentCategory={currentCategory}
+                    />
+                </>
+            }
 
             {isLoading &&
                 <div className='d-flex justify-content-center mt-4'>
@@ -90,21 +104,21 @@ const Videos: React.FC<IVideos> = ({ history }) => {
                 <Col className='d-flex justify-content-center flex-wrap'>
                     {videos.map(video => {
                         return (
-                            <div className='video-card' key={video._id}>
-                                <h4 className='text-right'>{video.title}</h4>
-                            
+                            <div className='video-card' key={video._id}>                            
                                 <div className='video-box'>
                                     <video controls>
                                         <source src={`/${video.src}`} type="video/mp4" />
                                     </video>
                                 </div>
 
-                                <p className='text-right m-0'>
-                                    <span>&#8362;{video.price}</span>
-                                    <strong className='ml-2'>:מחיר</strong>
-                                </p>
-                                
-                                <em className='text-right'>{video.updatedAt.substr(0, 10).split('-').reverse().join('/')}</em>
+                                <div className='video-content'>
+                                    <p className='text-right text-break description'>{video.description}</p>
+
+                                    <div className='d-flex flex-column'>
+                                        <span className='text-right'>&#8362;{video.price} מחירון</span>
+                                        <span className='text-right'>{video.updatedAt!.substr(0, 10).split('-').reverse().join('/')}</span>
+                                    </div>
+                                </div>
                             </div>
                         );
                     })}
