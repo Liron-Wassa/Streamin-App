@@ -1,0 +1,20 @@
+{
+  "name": "streaming-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liron-Wassa/Streamin-App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Liron-Wassa/Streamin-App/issues"
+  },
+  "homepage": "https://github.com/Liron-Wassa/Streamin-App#readme"
+}

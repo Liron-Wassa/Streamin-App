@@ -1,5 +1,6 @@
 import { Server as SocketServer } from 'socket.io';
 import express, { Application } from 'express';
+import { Request, Response } from 'express';
 import { findAll } from './services/video';
 import videoRoute from './routes/video';
 import connectToDb from './config/db';
@@ -30,6 +31,12 @@ connectToDb();
 
 app.use('/api/videos', videoRoute);
 app.use('/api/users', userRoute);
+
+if(process.env.NODE_ENV === 'production') {    
+    app.use(express.static(path.join(__dirname, '/../../client/build')));
+
+    app.get('*', (req: Request, res: Response) => res.sendFile(path.resolve(__dirname, '..', '..','client', 'build', 'index.html')));
+};
 
 //=====================================//
 

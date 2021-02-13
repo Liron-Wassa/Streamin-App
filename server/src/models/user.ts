@@ -11,7 +11,7 @@ const userSchema: Schema<IUser> = new Schema({
 });
 
 userSchema.methods.isPasswordMatch = async function(password: string) {
-    const isPasswordEqual: boolean = await bcrypt.compare(password, this.password);    
+    const isPasswordEqual: boolean = await bcrypt.compare(password, this.password);
 
     return isPasswordEqual;
 };
