@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "cd server && npm install && node server/dist/app.js",
+    "client-install": "cd client && npm install",
+    "react-build": "cd client && npm run build",
+    "heroku-postbuild": "npm run client-install && npm run react-build"
   },
   "repository": {
     "type": "git",
