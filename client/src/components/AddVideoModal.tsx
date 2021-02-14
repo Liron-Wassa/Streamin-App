@@ -240,7 +240,25 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
                       type="file"
                       required
                       onChange={createVideoHandler}
-                      accept='video/mov, video/mp4, video/wmv'
+                      accept='
+                      video/mp2,
+                      video/mp4,
+                      video/mov,
+                      video/wmv,
+                      video/webm,
+                      video/mpg,
+                      video/mpeg,
+                      video/mpe,
+                      video/mpv,
+                      video/ogg,
+                      video/m4p,
+                      video/m4v,
+                      video/avi,
+                      video/qt,
+                      video/flv
+                      video/swf
+                      video/avchd
+                      '
                     />
                   </Form.Group>
                 }
