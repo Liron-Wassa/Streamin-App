@@ -6,9 +6,10 @@ export interface ICategories {
 };
 export interface IVideo extends Document {
     _id: string,
-    src: string,
+    resourceUrl: string,
     category: string,
     description: string,
     price: number,
-    isUncompleted: boolean
+    isUncompleted: boolean,
+    resourceId: string
 };

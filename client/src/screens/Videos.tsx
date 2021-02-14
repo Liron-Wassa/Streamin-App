@@ -112,7 +112,7 @@ const Videos: React.FC<IVideos> = ({ history }) => {
                             >                            
                                 <div className='video-box'>
                                     <video controls>
-                                        <source src={`/${video.src}`} type="video/mp4" />
+                                        <source src={`${video.src}`} type="video/mp4" />
                                     </video>
                                 </div>
 

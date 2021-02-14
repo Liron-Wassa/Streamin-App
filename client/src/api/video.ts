@@ -5,7 +5,7 @@ let source: CancelTokenSource | null = null;
 
 interface VideoCreated {
     videoId: string,
-    videoPath: string
+    videoSrc: string
 };
 
 export const fetchVideos = (category: string): Promise<IVideo[]> => {
@@ -90,7 +90,7 @@ export const createVideo = (token: string, formData: FormData): Promise<VideoCre
         .then(res => {
             const partialVideoDetails: VideoCreated = {
                 videoId: res.data.videoId,
-                videoPath: res.data.videoPath
+                videoSrc: res.data.videoSrc
             };
 
             return partialVideoDetails;

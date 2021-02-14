@@ -6,6 +6,7 @@ const videoSchema: Schema<IVideo> = new Schema({
     category: { type: String, default: '' },
     description: { type: String, default: '' },
     price: { type: Number, default: null },
+    resourceId: { type: String, required: true },
     isUncompleted: { type: Boolean, default: true }
 },
 {

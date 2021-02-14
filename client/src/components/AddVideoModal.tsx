@@ -60,6 +60,7 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
   };
 
   const resetVideoDetails = (): void => {
+    setIsLoadingVideoSrc(false);
     setDescription('');
     setPrice('');
     setSrc('');
@@ -72,13 +73,15 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
 
       const formData = generateVideoForm(event);
 
-      const { videoId, videoPath } = await createVideo(userToken, formData);
+      const { videoId, videoSrc } = await createVideo(userToken, formData);      
 
       setIsLoadingVideoSrc(false);
-      setSrc(videoPath);
+      setSrc(videoSrc);
       setVideoId(videoId);
       
     } catch (error) {
+      console.log(error);
+      
       if(error.message === 'Cancel') return;
 
       setIsLoadingVideoSrc(false);
@@ -93,7 +96,7 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
     formData.append('video', file);
 
     return formData;
-  };
+  };  
 
   return (
     <Modal
@@ -213,13 +216,17 @@ const AddVideoModal: React.FC<IAddVideoModal> = ({ isModalShow, setIsModalShow, 
                 </Modal.Footer>
               </>
             :
-              <div className='d-flex justify-content-center align-items-center' style={{minHeight: '500px'}}>
+              <div className='d-flex justify-content-center align-items-center flex-column' style={{minHeight: '500px'}}>
                 {isLoadingVideoSrc ?
-                  <Spinner
-                    animation="border"
-                    variant="secondary"
-                    className='mx-auto mt-4'
-                  />
+                  <>
+                    <p className='text-center' style={{color: '#6c757d', letterSpacing: '1px'}}>...אנא המתן בסבלנות בזמן עיבוד הסרטון</p>
+
+                    <Spinner
+                      animation="border"
+                      variant="secondary"
+                      className='mx-auto mt-4'
+                    />
+                  </>
                 :
                   <Form.Group
                     controlId="videoFile"

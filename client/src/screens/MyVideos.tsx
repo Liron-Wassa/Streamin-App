@@ -130,7 +130,7 @@ const MyVideos: React.FC<IMyVideos> = ({ history }) => {
                                     <td data-header=':וידיאו' className='videoTd'>
                                         <div className={video.isUncompleted ? 'video-box uncompleted' : 'video-box'}>
                                             <video controls>
-                                                <source src={`/${video.src}`} type="video/mp4" />
+                                                <source src={`${video.src}`} type="video/mp4" />
                                             </video>
                                         </div>
                                     </td>
