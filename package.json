@@ -11,10 +11,9 @@
     "server-install": "cd server && npm install",
     "client-build": "cd client && npm run build",
     "server-build": "cd server && npm run build",
-    "start": "cd server && npm start",
     "install-all": "npm run client-install && npm run server-install",
     "build-all": "npm run client-build && npm run server-build",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-all && npm run build-all"
+    "heroku-postbuild": "npm run install-all && npm run build-all"
   },
   "repository": {
     "type": "git",
